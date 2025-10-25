@@ -1,14 +1,14 @@
-import time, sys, os
+import time, sys, os, mwparserfromhell
 from lxml import etree
-import mwparserfromhell as mw
 
 INPUT_PATH = "enwiki-20251001-pages-articles-multistream.xml"
 OUTPUT_FILE = '/mnt/8TB_HDD/datasets/TitusAI-datasets/wiki_pages'
 
 OUTPUT_FILE_OBJ = open(os.path.join(OUTPUT_FILE, 'wiki_dump_1.txt'), "ab+")
+PARSER = mwparserfromhell.parser.Parser()
 
 def clean_wikitext(s):
-    out = mw.parse(s).strip_code(normalize=True, collapse=True)
+    out = PARSER.parse(s).strip_code(normalize=True, collapse=True)
     return out.encode('utf-8', errors='ignore')
 
 def main(xml_path):
@@ -39,8 +39,7 @@ def main(xml_path):
                 OUTPUT_FILE_OBJ = open(os.path.join(OUTPUT_FILE, f'wiki_dump_{file_counter}.txt'), "ab+")
                 byte_counter = 0
                 
-        # Now free the subtree for real
-        text = text_el = rev = None
+        text = None
         page.clear()
         while page.getprevious() is not None:
             del page.getparent()[0]
