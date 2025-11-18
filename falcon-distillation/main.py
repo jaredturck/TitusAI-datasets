@@ -75,4 +75,7 @@ if __name__ == '__main__':
     dt = FalconDistillation()
     send_status('[+] Started Falcon distillation')
     for i in range(10_000):
-        dt.generate()
+        try:
+            dt.generate()
+        except Exception as e:
+            send_status(f'[error] Exception during generation: {e}')
