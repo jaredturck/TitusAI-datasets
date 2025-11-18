@@ -1,5 +1,3 @@
-Your task is to create a text conversation chat log between two people. You can make the chat log as long as you like. The conversation should sound natural, 
-as in it's a human conversation about things that two people are talking about over text. Each message of the conversation should appear on a new line, 
-so you're separating messages with a new line character \n. There are many different topics you can talk about (plans, hobbies, relationships, work, school, 
-family, jokes, etc.). It's completely up to you the topics that you want, but you should pick things that are interesting and are the kind of topics 
-that people would talk about over text.
+version https://git-lfs.github.com/spec/v1
+oid sha256:0936284e11792365cb5edb668dc5f714a229b28deeacc2b506c9cd37c92a9957
+size 659
