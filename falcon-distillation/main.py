@@ -25,14 +25,11 @@ class FalconDistillation:
             torch_dtype=torch.bfloat16,
             device_map="cuda",
         )
-        self.prompt = open('prompt_template.txt','r').read()
+        self.prompt = open('prompt_template_flirt.txt','r').read()
         self.starters = open('prompt_conversation_starts.txt').read().split('\n')
         self.topics = open('prompt_conversation_topics.txt').read().split('\n')
         self.output_path = 'outputs_dataset_2/'
-        self.prefix_regex = re.compile(r'^person|person a|person b|person one|person two|friend|user|you|bot', re.IGNORECASE)
-        self.prefix_regex2 = re.compile(r'^(person|person a|person b|person one|person two|friend|user|you|bot|one|two|a|b)[\s]*[\d+:\s]*', re.IGNORECASE|re.MULTILINE)
-        self.prefix_regex3 = re.compile(r'^\d+[\.\):]*', re.IGNORECASE|re.MULTILINE)
-    
+
     def generate_prompt(self):
 
         starter_text = random.choice(self.starters)
@@ -41,9 +38,9 @@ class FalconDistillation:
         return f'{self.prompt} for example {starter_text} {topics_text}'
     
     def clean_up_text(self, text):
-        txt = '\n'.join(filter(self.prefix_regex.match, text.split('\n')))
-        txt = self.prefix_regex2.sub('', txt)
-        txt = self.prefix_regex3.sub('', txt)
+        txt = '\n'.join(filter(lambda x : len(x) >= 3, text.split('\n')))
+        txt = re.sub(r'^(person|person a|person b|person one|person two|friend|user|you|bot)[\s]*[\d+:\s]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
+        txt = re.sub(r'^\d+[\.\):]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
         return txt
     
     def generate(self):
@@ -59,7 +56,7 @@ class FalconDistillation:
             top_k=50,
             top_p=0.9,
             temperature=0.8,
-            num_return_sequences=200,
+            num_return_sequences=150,
             repetition_penalty=1.1,
             no_repeat_ngram_size=4,
             return_full_text=False,
@@ -67,7 +64,7 @@ class FalconDistillation:
         )
         
         print('[+] Generated sequences, writing to file')
-        fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}.txt'
+        fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}_{seed}.txt'
         with open(os.path.join(self.output_path, fname), 'w') as file:
             for seq in sequences:
                 file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
