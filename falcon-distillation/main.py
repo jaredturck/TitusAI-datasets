@@ -1,6 +1,7 @@
 from transformers import AutoTokenizer
 import transformers
-import torch, random, re
+import torch, re
+from random import SystemRandom
 
 class FalconDistillation:
     ''' Create training samples using Falcon '''
@@ -18,28 +19,34 @@ class FalconDistillation:
         self.prompt = open('prompt_template.txt','r').read()
         self.starters = open('prompt_conversation_starts.txt').read().split('\n')
         self.topics = open('prompt_conversation_topics.txt').read().split('\n')
+        self.urandom = SystemRandom()
     
     def generate_prompt(self):
 
-        starter_text = random.choice(self.starters)
-        topics_text = random.choice(self.topics)
+        starter_text = self.urandom.choice(self.starters)
+        topics_text = self.urandom.choice(self.topics)
 
         return f'{self.prompt} for example {starter_text} {topics_text}'
     
     def clean_up_text(self, text):
-        txt = re.sub(r'^(person|person a|person b|person one|person two|friend|user|you)[\s]*[\d+:\s]*', '', text, flags=re.IGNORECASE|re.MULTILINE)
+        txt = '\n'.join(filter(lambda x : len(x) >= 3, text.split('\n')))
+        txt = re.sub(r'^(person|person a|person b|person one|person two|friend|user|you|bot)[\s]*[\d+:\s]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
         txt = re.sub(r'^\d+[\.\):]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
         return txt
     
     def generate(self):
+        
+        seed = self.urandom.randrange(0, 2**32-1)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
 
         sequences = self.pipeline(
             self.generate_prompt(),
             do_sample=True,
-            top_k=10,
+            top_k=50,
             top_p=0.9,
-            temperature=1.2,
-            num_return_sequences=50,
+            temperature=0.8,
+            num_return_sequences=100,
             repetition_penalty=1.1,
             no_repeat_ngram_size=4,
             min_length=800,
