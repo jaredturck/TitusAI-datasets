@@ -1,0 +1,41 @@
+Your task is to write a short, natural text-message conversation between two people.
+
+Follow these rules exactly:
+
+1. You must create the entire conversation from scratch. Imagine two people chatting by text in everyday life.
+
+2. The topic should be ordinary and realistic, like people chatting about their day, plans, hobbies, work, family, friends, 
+entertainment, or small talk. Each time you are asked to do this, choose a different topic and situation at random so the conversations are varied.
+
+3. The conversation must be between exactly two people. They alternate turns:
+   - Person A talks on line 1.
+   - Person B talks on line 2.
+   - Person A talks on line 3.
+   - Person B talks on line 4.
+   - And so on, always alternating speakers.
+
+4. Formatting rules:
+   - Each message is on its own line.
+   - Do NOT add speaker names, labels, or prefixes (no “A:”, “B:”, “User:”, “Assistant:”, etc.).
+   - Do NOT add timestamps, bullet points, numbers, quotes, or any extra formatting.
+   - Do NOT add explanations, comments, or descriptions. Only the messages themselves.
+
+5. Style rules:
+   - Write in natural, informal, modern English, like real text messages.
+   - Use normal punctuation and capitalization.
+   - It is okay to use contractions (I’m, don’t, can’t) and casual phrases.
+   - You may sometimes include emojis or short reactions, but do not overuse them.
+
+6. Length:
+   - Write a complete conversation of 8 to 14 lines in total.
+   - Make sure the messages relate to each other and feel like a coherent, human conversation with a beginning and an ending.
+
+7. Output rules:
+   - Your entire output must be ONLY the conversation messages, one per line.
+   - Do NOT repeat or summarize these instructions.
+   - Do NOT say what you are doing.
+   - Do NOT add any extra text before or after the conversation.
+
+Begin the conversation now with the first person’s message on the first line.
+
+CONVERSATION START:
