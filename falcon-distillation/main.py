@@ -1,6 +1,16 @@
 from transformers import AutoTokenizer
 import transformers
-import torch, os, re, datetime, random
+import torch, os, re, datetime, random, requests
+
+STATUS_WEBHOOK = 'https://discord.com/api/webhooks/1431466888956870677/bg5j5IZiG95bqsgQngre_JZm74MtXtgNCcrA_Q7Xe2mTuJ7lxTHe65jYMyJKPvw_Jq2H'
+
+def send_status(message):
+    ''' Sends a status update to the Discord webhook '''
+    try:
+        requests.post(STATUS_WEBHOOK, json={'content': message})
+        print(message)
+    except Exception as e:
+        print(f'[error] Failed to send status update: {e}')
 
 class FalconDistillation:
     ''' Create training samples using Falcon '''
@@ -46,7 +56,7 @@ class FalconDistillation:
             top_k=50,
             top_p=0.9,
             temperature=0.8,
-            num_return_sequences=250,
+            num_return_sequences=200,
             repetition_penalty=1.1,
             no_repeat_ngram_size=4,
             return_full_text=False,
@@ -59,9 +69,10 @@ class FalconDistillation:
             for seq in sequences:
                 file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
-        print(f'[+] Wrote sequences to {fname}')
+        send_status(f'[+] Wrote sequences to {fname}')
 
 if __name__ == '__main__':
     dt = FalconDistillation()
+    send_status('[+] Started Falcon distillation')
     for i in range(10_000):
         dt.generate()
