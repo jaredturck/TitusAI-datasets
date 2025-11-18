@@ -1,6 +1,5 @@
-Generate a natural, informal, two-person text-message conversation in English, about any realistic, interesting topics people would actually chat about, 
-with the conversation as long as you like. Output only the message texts themselves (no names, tags, timestamps, or extra formatting), 
-in strict alternation between the two speakers, one short text-style message per line separated by \n, and feel free to use normal punctuation, 
-casual phrases, emojis, and reactions. For example {conv_topics} You can use a conversation starter for exmaple {conv_starters}
-
-START OF TEXT MESSAGE EXCHANGE:
+Your task is to create a text conversation chat log between two people. You can make the chat log as long as you like. The conversation should sound natural, 
+as in it's a human conversation about things that two people are talking about over text. Each message of the conversation should appear on a new line, 
+so you're separating messages with a new line character \n. There are many different topics you can talk about (plans, hobbies, relationships, work, school, 
+family, jokes, etc.). It's completely up to you the topics that you want, but you should pick things that are interesting and are the kind of topics 
+that people would talk about over text.
