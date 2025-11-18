@@ -28,7 +28,10 @@ class FalconDistillation:
         self.prompt = open('prompt_template.txt','r').read()
         self.starters = open('prompt_conversation_starts.txt').read().split('\n')
         self.topics = open('prompt_conversation_topics.txt').read().split('\n')
-        self.output_path = 'outputs/'
+        self.output_path = 'outputs_dataset_2/'
+        self.prefix_regex = re.compile(r'^person|person a|person b|person one|person two|friend|user|you|bot', re.IGNORECASE)
+        self.prefix_regex2 = re.compile(r'^(person|person a|person b|person one|person two|friend|user|you|bot|one|two|a|b)[\s]*[\d+:\s]*', re.IGNORECASE|re.MULTILINE)
+        self.prefix_regex3 = re.compile(r'^\d+[\.\):]*', re.IGNORECASE|re.MULTILINE)
     
     def generate_prompt(self):
 
@@ -38,9 +41,9 @@ class FalconDistillation:
         return f'{self.prompt} for example {starter_text} {topics_text}'
     
     def clean_up_text(self, text):
-        txt = '\n'.join(filter(lambda x : len(x) >= 3, text.split('\n')))
-        txt = re.sub(r'^(person|person a|person b|person one|person two|friend|user|you|bot)[\s]*[\d+:\s]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
-        txt = re.sub(r'^\d+[\.\):]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
+        txt = '\n'.join(filter(self.prefix_regex.match, text.split('\n')))
+        txt = self.prefix_regex2.sub('', txt)
+        txt = self.prefix_regex3.sub('', txt)
         return txt
     
     def generate(self):
