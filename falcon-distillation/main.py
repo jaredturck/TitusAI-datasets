@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer
 import transformers
-import torch, random
+import torch, random, re
 
 class FalconDistillation:
     ''' Create training samples using Falcon '''
@@ -26,6 +26,11 @@ class FalconDistillation:
 
         return f'{self.prompt} for example {starter_text} {topics_text}'
     
+    def clean_up_text(self, text):
+        txt = re.sub(r'^(person|person a|person b|person one|person two|friend|user|you)[\s]*[\d+:\s]*', '', text, flags=re.IGNORECASE|re.MULTILINE)
+        txt = re.sub(r'^\d+[\.\):]*', '', txt, flags=re.IGNORECASE|re.MULTILINE)
+        return txt
+    
     def generate(self):
 
         sequences = self.pipeline(
@@ -37,6 +42,7 @@ class FalconDistillation:
             num_return_sequences=50,
             repetition_penalty=1.1,
             no_repeat_ngram_size=4,
+            min_length=800,
             max_length=2048,
             return_full_text=False,
             eos_token_id=self.tokenizer.eos_token_id,
@@ -44,7 +50,7 @@ class FalconDistillation:
 
         with open('output_chat.txt', 'w') as file:
             for seq in sequences:
-                file.write('\n[BOS]\n' + seq['generated_text'] + '\n[EOS]\n')
+                file.write('\n[BOS]\n' + self.clean_up_text(seq['generated_text']) + '\n[EOS]\n')
 
         print(sequences[0]['generated_text'])
 
