@@ -1,6 +1,6 @@
 from transformers import AutoTokenizer
 import transformers
-import torch, re
+import torch, os, re, datetime
 from random import SystemRandom
 
 class FalconDistillation:
@@ -20,6 +20,7 @@ class FalconDistillation:
         self.starters = open('prompt_conversation_starts.txt').read().split('\n')
         self.topics = open('prompt_conversation_topics.txt').read().split('\n')
         self.urandom = SystemRandom()
+        self.output_path = 'outputs/'
     
     def generate_prompt(self):
 
@@ -46,20 +47,23 @@ class FalconDistillation:
             top_k=50,
             top_p=0.9,
             temperature=0.8,
-            num_return_sequences=100,
+            num_return_sequences=250,
             repetition_penalty=1.1,
             no_repeat_ngram_size=4,
-            min_length=800,
-            max_length=2048,
+            min_length = 256,
+            max_new_tokens=2048,
             return_full_text=False,
             eos_token_id=self.tokenizer.eos_token_id,
         )
 
-        with open('output_chat.txt', 'w') as file:
+        fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}.txt'
+        with open(os.path.join(self.output_path, fname), 'w') as file:
             for seq in sequences:
-                file.write('\n[BOS]\n' + self.clean_up_text(seq['generated_text']) + '\n[EOS]\n')
+                file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
-        print(sequences[0]['generated_text'])
+        print(f'[+] Wrote sequences to {fname}')
 
-dt = FalconDistillation()
-dt.generate()
+if __name__ == '__main__':
+    dt = FalconDistillation()
+    for i in range(10_000):
+        dt.generate()
