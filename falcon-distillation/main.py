@@ -28,7 +28,7 @@ class FalconDistillation:
         self.prompt = open('prompt_template_flirt.txt','r').read()
         self.starters = open('prompt_conversation_starts.txt').read().split('\n')
         self.topics = open('prompt_conversation_topics.txt').read().split('\n')
-        self.output_path = 'outputs_dataset_2/'
+        self.output_path = 'outputs_dataset_3/'
 
     def generate_prompt(self):
 
@@ -70,12 +70,35 @@ class FalconDistillation:
                 file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
         send_status(f'[+] Wrote sequences to {fname}')
+    
+    def generate_2(self):
+
+        seed = random.randrange(0, 2**32-1)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+
+        for prompt in self.topics + self.starters:
+            print(f'[+] prompt: {prompt}')
+            sequences = self.pipeline(
+                prompt,
+                do_sample=True,
+                top_k=50,
+                top_p=0.9,
+                temperature=0.8,
+                num_return_sequences=200,
+                repetition_penalty=1.1,
+                no_repeat_ngram_size=4,
+                return_full_text=False,
+                eos_token_id=self.tokenizer.eos_token_id,
+            )
+            
+            fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}_{seed}.txt'
+            with open(os.path.join(self.output_path, fname), 'w') as file:
+                for seq in sequences:
+                    file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
+
+            send_status(f'[+] Wrote sequences to {fname}')
 
 if __name__ == '__main__':
     dt = FalconDistillation()
-    send_status('[+] Started Falcon distillation')
-    for i in range(10_000):
-        try:
-            dt.generate()
-        except Exception as e:
-            send_status(f'[error] Exception during generation: {e}')
+    dt.generate_2()
