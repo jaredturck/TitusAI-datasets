@@ -73,11 +73,10 @@ class FalconDistillation:
     
     def generate_2(self):
         try:
-            seed = random.randrange(0, 2**32-1)
-            torch.manual_seed(seed)
-            torch.cuda.manual_seed_all(seed)
-
             for prompt in self.topics + self.starters:
+                seed = random.randrange(0, 2**32-1)
+                torch.manual_seed(seed)
+                torch.cuda.manual_seed_all(seed)
                 print(f'[+] prompt: {prompt}')
                 sequences = self.pipeline(
                     prompt,
