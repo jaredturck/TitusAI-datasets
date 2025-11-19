@@ -88,12 +88,12 @@ class FalconDistillation:
                 num_return_sequences=200,
                 repetition_penalty=1.1,
                 no_repeat_ngram_size=4,
-                return_full_text=False,
+                return_full_text=True,
                 eos_token_id=self.tokenizer.eos_token_id,
             )
             
             fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}_{seed}.txt'
-            with open(os.path.join(self.output_path, fname), 'w') as file:
+            with open(os.path.join(self.output_path, fname), 'a', encoding='utf-8') as file:
                 for seq in sequences:
                     file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
