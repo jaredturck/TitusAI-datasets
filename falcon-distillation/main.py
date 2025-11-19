@@ -72,32 +72,34 @@ class FalconDistillation:
         send_status(f'[+] Wrote sequences to {fname}')
     
     def generate_2(self):
+        try:
+            seed = random.randrange(0, 2**32-1)
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
 
-        seed = random.randrange(0, 2**32-1)
-        torch.manual_seed(seed)
-        torch.cuda.manual_seed_all(seed)
+            for prompt in self.topics + self.starters:
+                print(f'[+] prompt: {prompt}')
+                sequences = self.pipeline(
+                    prompt,
+                    do_sample=True,
+                    top_k=50,
+                    top_p=0.9,
+                    temperature=0.8,
+                    num_return_sequences=200,
+                    repetition_penalty=1.1,
+                    no_repeat_ngram_size=4,
+                    return_full_text=True,
+                    eos_token_id=self.tokenizer.eos_token_id,
+                )
+                
+                fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}_{seed}.txt'
+                with open(os.path.join(self.output_path, fname), 'a', encoding='utf-8') as file:
+                    for seq in sequences:
+                        file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
-        for prompt in self.topics + self.starters:
-            print(f'[+] prompt: {prompt}')
-            sequences = self.pipeline(
-                prompt,
-                do_sample=True,
-                top_k=50,
-                top_p=0.9,
-                temperature=0.8,
-                num_return_sequences=200,
-                repetition_penalty=1.1,
-                no_repeat_ngram_size=4,
-                return_full_text=True,
-                eos_token_id=self.tokenizer.eos_token_id,
-            )
-            
-            fname = f'output_chat_{datetime.datetime.now().strftime("%d_%b_%Y_%H_%M")}_{seed}.txt'
-            with open(os.path.join(self.output_path, fname), 'a', encoding='utf-8') as file:
-                for seq in sequences:
-                    file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
-
-            send_status(f'[+] Wrote sequences to {fname}')
+                send_status(f'[+] Wrote sequences to {fname}')
+        except Exception as e:
+            send_status(f'[error] Exception during generation: {e}')
 
 if __name__ == '__main__':
     dt = FalconDistillation()
