@@ -76,7 +76,7 @@ class FalconDistillation:
         self.output_path = 'outputs_dataset_3/'
         try:
             for n,prompt in enumerate(self.topics + self.starters):
-                if n < 580:
+                if n < 579:
                     print(f'[+] Skipped prompt {prompt}')
                     continue
 
