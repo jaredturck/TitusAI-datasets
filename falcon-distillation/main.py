@@ -102,7 +102,7 @@ class FalconDistillation:
                     for seq in sequences:
                         file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
-                send_status(f'[+] Wrote sequences to {fname}')
+                send_status(f'[+] Wrote sequences to {os.path.join(self.output_path, fname)}')
         except Exception as e:
             send_status(f'[error] Exception during generation: {e}')
     
@@ -129,7 +129,7 @@ class FalconDistillation:
             for seq in sequences:
                 file.write('\n' + self.clean_up_text(seq['generated_text']) + '\n')
 
-        send_status(f'[+] Wrote sequences to {fname}')
+        send_status(f'[+] Wrote sequences to {os.path.join(self.output_path, fname)}')
     
     def generate_3(self):
         ''' Dataset 4 '''
@@ -149,5 +149,5 @@ class FalconDistillation:
 if __name__ == '__main__':
     dt = FalconDistillation()
     # dt.generate() - dataset 1 and 2
-    dt.generate_2() # dataset 3
+    # dt.generate_2() - dataset 3
     dt.generate_3() # dataset 4
