@@ -150,4 +150,4 @@ if __name__ == '__main__':
     dt = FalconDistillation()
     # dt.generate() - dataset 1 and 2
     # dt.generate_2() - dataset 3
-    dt.generate_3() # dataset 4
+    # dt.generate_3() - dataset 4
