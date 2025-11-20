@@ -90,7 +90,7 @@ class FalconDistillation:
                     top_k=50,
                     top_p=0.9,
                     temperature=0.8,
-                    num_return_sequences=200,
+                    num_return_sequences=100,
                     repetition_penalty=1.1,
                     no_repeat_ngram_size=4,
                     return_full_text=True,
